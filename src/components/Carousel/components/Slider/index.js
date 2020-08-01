@@ -23,7 +23,7 @@ const Container = styled.ul`
     left: 0;
   }
   .slick-next {
-    right: 16px;
+    right: 40px;
   }
 `;
 
@@ -45,8 +45,9 @@ const Slider = ({ children }) => (
       className: "center",
       centerMode: true,
       infinite: true,
-      centerPadding: "30px",
+      centerPadding: "5px",
       slidesToShow: 3,
+      slidesToScroll: 3,
       speed: 500,
     }}
     >

@@ -1,49 +1,53 @@
-import React from 'react';
-import Menu from '../../components/menu';
-import Footer from '../../components/Footer';
+import React, { useEffect, useState} from 'react';
 import Carousel from '../../components/Carousel';
 import BannerMain from '../../components/BannerMain';
-import dadosIniciais from '../../data/dados_iniciais.json';
+import repositories from '../../repositories/categorias';
+import PageDefault from '../../components/PageDefault';
 
-function home() {
+function Home() {
+  const [initialDates, setInitialDates] = useState([]);
+  
+
+  useEffect(() => {
+      repositories.getAllWithVideo()
+      .then((categoriesWithVideo) => {
+        setInitialDates(categoriesWithVideo);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        });
+  }, []);
+
   return (
-    <div style={{ background: "#141414" }}>
-    <Menu />
+    <PageDefault paddingAll={0} >
 
-    <BannerMain
-      videoTitle={dadosIniciais.categorias[0].videos[0].titulo}
-      url={dadosIniciais.categorias[0].videos[0].url}
-      videoDescription={"O que é Front-end? Trabalhando na área os termos HTML, CSS e JavaScript fazem parte da rotina das desenvolvedoras e desenvolvedores. Mas o que eles fazem, afinal? Descubra com a Vanessa!"}
-    />
+      {initialDates.length === 0 && (<div>Loading...</div>)}
 
-    <Carousel
-      ignoreFirstVideo
-      category={dadosIniciais.categorias[0]}
-    />
+      {initialDates.map((categoria, indice) => {
+        if(indice === 0) {
+          return (
+                  <div key={categoria.id}>
+                    <BannerMain
+                      videoTitle={initialDates[0].videos[0].titulo}
+                      url={initialDates[0].videos[0].url}
+                      videoDescription={"O que é Front-end? Trabalhando na área os termos HTML, CSS e JavaScript fazem parte da rotina das desenvolvedoras e desenvolvedores. Mas o que eles fazem, afinal? Descubra com a Vanessa!"}
+                    /> 
+                    <Carousel
+                      ignoreFirstVideo
+                      category={initialDates[0]}
+                      />
+                  </div>
+          );
+        }
 
-    <Carousel
-      category={dadosIniciais.categorias[1]}
-    />
+        return (
+          <Carousel key={categoria.id} category={categoria} />
+        );
+        })}
 
-    <Carousel
-      category={dadosIniciais.categorias[2]}
-    />      
 
-    <Carousel
-      category={dadosIniciais.categorias[3]}
-    />      
-
-    <Carousel
-      category={dadosIniciais.categorias[4]}
-    />      
-
-    <Carousel
-      category={dadosIniciais.categorias[5]}
-    />      
-
-    <Footer />
-  </div>
+  </PageDefault>
   );
 }
 
-export default home;
+export default Home;

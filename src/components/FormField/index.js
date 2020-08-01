@@ -67,34 +67,51 @@ const Input = styled.input`
     `}
 `;
 
-function FormField({label, type, value, name, onChange}) {
+function FormField({ label, type, value, name, onChange, suggestions }) {
   const FieldId = `id_${name}`;
   const isATextarea = type === 'textarea';
-  const tag =  isATextarea ? 'textarea' : 'input';
+  const tag = isATextarea ? 'textarea' : 'input';
   const hasValue = Boolean(value.length);
+  const hasSuggestions = Boolean(suggestions.length);
 
-  return ( 
-        <FormFieldWrapper>
-          <Label htmlFor={FieldId}>
-            <Input as={tag} id={FieldId} type={type}  value={value} name={name} hasValue={hasValue} onChange={onChange}/>
-            <Label.Text>{label}</Label.Text>
-          </Label>
-        </FormFieldWrapper>
-    )
+  return (
+    <FormFieldWrapper>
+      <Label htmlFor={FieldId}>
+        <Input as={tag} id={FieldId} type={type} value={value} name={name} hasValue={hasValue} onChange={onChange} autoComplete={hasSuggestions ? 'off' : 'on'} list={hasSuggestions ? `suggestionsFor_${FieldId}` : undefined} />
+        <Label.Text>{label}</Label.Text>
+      </Label>
+      {
+        hasSuggestions && (
+          <datalist id={`suggestionsFor_${FieldId}`}>
+            {
+              suggestions.map((suggestions) => (
+                <option value={suggestions} key={`suggestionsFor_${FieldId}_option${suggestions}`}>
+                  {suggestions}
+                </option>
+              ))
+            }
+          </datalist>
+        )
+      }
+
+    </FormFieldWrapper>
+  );
 }
 
 FormField.defaultProps = {
   type: 'text',
   value: '',
   onChange: () => {},
-}
+  suggestions: [],
+};
 
 FormField.prototype = {
-  label: PropTypes.string.isRequired, 
-  type:PropTypes.string, 
-  value: PropTypes.string, 
-  name: PropTypes.string.isRequired, 
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  value: PropTypes.string,
+  name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-}
+  suggestions: PropTypes.arrayOf(PropTypes.string),
+};
 
 export default FormField;

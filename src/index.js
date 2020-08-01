@@ -13,8 +13,8 @@ ReactDOM.render(
    <BrowserRouter>
     <Switch>
       <Route path="/" component={home} exact/>
-      <Route path="/cadastro/video" component={CadastroVideo} exact />
-      <Route path="/cadastro/categoria" component={CadastroCategoria} exact />
+      <Route path="/cadastro/video" component={CadastroVideo} />
+      <Route path="/cadastro/categoria" component={CadastroCategoria} />
       <Route component={Error404} />
     </Switch>
    </BrowserRouter>,

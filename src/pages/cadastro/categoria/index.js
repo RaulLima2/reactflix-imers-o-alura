@@ -2,7 +2,10 @@ import React, {useState, useEffect} from 'react'
 import PageDefault from '../../../components/PageDefault';
 import { Link } from 'react-router-dom';
 import FormField from '../../../components/FormField';
-import Button from '../../../components/button'
+import Button from '../../../components/button';
+import useForm from '../../../hooks/useForm';
+
+
 
 function CadastroCategoria() {
   const valuesCategoria = {
@@ -10,26 +13,16 @@ function CadastroCategoria() {
     descrição: '',
     cor: '',
   }
+
+  const { HandlerChange, values, clearForm} = useForm(valuesCategoria);
   
   const [categorias, setCategorias] = useState(['Teste']);
-  const [values, setValues] = useState(valuesCategoria);
-
-  function setValue(key, value) {
-    setValues({
-      ...values,
-      [key]: value,
-    })
-  }
-
-  function HandlerChange(event) {
-    setValue(event.target.getAttribute('name'),event.target.value);
-  }
 
   useEffect(() => {
-    const url = 'http://localhost:3000/cadastro/categoria';
+    const url = window.location.hostname.includes('localhost') ? 'http://localhost:8080/categorias' : 'https://raulflix.herokuapp.com/categoria';
 
-    fetch(url).then(async (body)=>{
-        const answer = await body.json();
+    fetch(url).then(async (answerServer)=>{
+        const answer = await answerServer.json();
         setCategorias([
           ...answer,
         ]);
@@ -61,12 +54,12 @@ function CadastroCategoria() {
             values
           ]);
 
-          setValues({})
+          clearForm({})
         }}>
 
           <FormField label="Nome da Categoria:" type="text" value={values.nome} name="nome" onChange={HandlerChange}/>
 
-          <FormField label="Descrição:" type="????" value={values.descrição} name="descrição" onChange={HandlerChange}/>
+          <FormField label="Descrição:" type="textarea" value={values.descrição} name="descrição" onChange={HandlerChange}/>
           
           <FormField label="Cor:" type="color" value={values.nome} name="cor" onChange={HandlerChange}/>
 
@@ -83,8 +76,8 @@ function CadastroCategoria() {
         <ul>
           {categorias.map((categorias) =>{
             return (
-              <li key={`{$categorias.nome}`}>
-                {categorias.nome}
+              <li key={`{$categorias.titulo}`}>
+                {categorias.titulo}
               </li>
             )
           })}
